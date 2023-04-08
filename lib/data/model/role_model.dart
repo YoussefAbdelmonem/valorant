@@ -1,9 +1,14 @@
-class Role {
-  String displayIcon,description,displayName,uuid;
-
-  Role({required this.displayIcon,
-    required this.description,
+class RoleModel {
+  RoleModel({
     required this.displayName,
-    required this.uuid
+    required this.description,
+    required this.displayIcon,
+    required this.id,
   });
+
+  // int id;
+  String displayName;
+  String description;
+  String displayIcon;
+  String id;
 }
