@@ -22,52 +22,55 @@ class CharacterCubit extends Cubit<CharacterState> {
       if (response == null) {
         return [];
       }
-      final responseDecoded = json.decode(response.body);
-      final data = responseDecoded["data"] as List<dynamic>;
-      final list = data.map((e) {
-        final role = e["role"] ?? {};
-        final roleInfo = Role(
-          displayIcon: role["displayIcon"] ?? "",
-          description: role["description"] ?? "",
-          displayName: role["displayName"] ?? "",
-          uuid: role["uuid"] ?? "",
-        );
+      final listOfCharacters = json.decode(response.body);
+      final owo = listOfCharacters['data'] as List<dynamic>;
+      final list = owo
+          .map((dynamic e)
+      {
+        //Role
+        final roles = e['role'] ?? {};
+        final roleInfo = RoleModel(
+            displayName: roles['displayName'] ?? '',
+            description: roles['description'] ?? '',
+            displayIcon: roles['displayIcon'] ?? '',
+            id: roles['uuid'] ?? '');
 
-        /// abilities
-        final abilities = e["abilities"] as List<dynamic>;
-        final abilitiesList = abilities.map((a) {
-          return Ability(
-            displayIcon: a["displayIcon"] ?? "",
-            description: a["description"] ?? "",
-            displayName: a["displayName"] ?? "",
-            slot: a["slot"] ?? "",
-          );
-        }).toList();
-        abilitiesList.retainWhere((element) => element.displayName.isNotEmpty);
+        //Abilities
+        final abilities = e['abilities'] as List<dynamic>;
+        final abilitiesInfo = abilities
+            .map((dynamic a) => Ability(
+          slot: a['slot'] ?? '',
+          displayName: a['displayName'] ?? '',
+          description: a['description'] ?? '',
+          displayIcon: a['displayIcon'] ?? '',
+        ))
+            .toList();
+        abilitiesInfo.retainWhere((x) => x.displayIcon.isNotEmpty);
 
-        /// voice line
-        final voiceLine = e["voiceLine"] ?? {};
-        final voiceMediaList = voiceLine["mediaList"] as List;
-        final voiceMedia = VoiceLine(
-          voiceLine: voiceMediaList[0]["wave"] ?? "",
-        );
+        //VoiceLine
+        final voiceLine = e['voiceLine'] ?? {};
+        final voiceMediaList = voiceLine['mediaList'] as List;
+        final voiceMedia =
+        VoiceLine(voiceLine: voiceMediaList[0]['wave']);
 
         return CharacterModel(
-          fullPortrait: e["fullPortrait"] ?? "",
-          displayIcon: e["displayIcon"] ?? "",
-          description: e["description"] ?? "",
-          displayName: e["displayName"] ?? "",
-          abilities: abilitiesList,
-          voiceLine: voiceMedia,
+          displayName: e['displayName'] ?? '',
+          description: e['description'] ?? '',
+          background: e['background'] ?? '',
+          fullPortrait: e['fullPortrait'] ?? '',
           role: roleInfo,
+          abilities: abilitiesInfo,
+          voiceLine: voiceMedia,
         );
-      }).toSet().toList();
-      list.retainWhere((element) => element.fullPortrait.isNotEmpty);
-      return list ;
-    } catch ( e) {
-      print(e);
-      throw Exception(e);
+      }
+      ).toSet()
+          .toList();
 
+      list.retainWhere((x) => x.fullPortrait.isNotEmpty);
+      return list;
+    } catch (e) {
+      print(e);
+      throw Exception(e.toString());
     }
   }
 
